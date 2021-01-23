@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import Menu from './components/Menu';
 import MenuApp from './components/MenuApp'
-import Cell from './components/Cell'
+import Board from './components/Board'
 
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
             <MenuApp/>
         </div>
         <div>
-          <Cell/>
+          <Board/>
         </div>
     </div>
   );
