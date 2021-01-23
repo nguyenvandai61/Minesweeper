@@ -35,7 +35,9 @@ export class Cell extends Component {
         if (isBomb) {
             this.onFinishHandler();
         }
-        this.setState({content: nBomb});
+        else {
+            this.setState({content: nBomb});
+        }
     }
 
     onFinishHandler = () => {
