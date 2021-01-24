@@ -73,7 +73,9 @@ export class Cell extends Component {
     }
 
     render() {
-        let {content} = this.state;
+        // let {content} = this.state;
+        let content = this.props.value;
+        
         
         return (
             <div 
