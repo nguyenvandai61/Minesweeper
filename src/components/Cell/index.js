@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
+import {AppContext} from '../../AppContext'
 import './style.css';
 
 export class Cell extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            nBomb: 0,
-            isBomb: false,
+            nBomb: this.props.nBomb,
+            isBomb: this.props.isBomb,
             isFlag: false,
-            isOpened: false,
+            isOpened: this.props.isOpened || false,
 
             content: "", 
         }
@@ -19,10 +20,10 @@ export class Cell extends Component {
         let {isOpened} = this.state;
         
         if (!isOpened) {
-            this.onOpenHandler();
+            this.onCloseHandler();
         } 
         else {
-            this.onCloseHandler();
+            this.onOpenHandler();
         }
     }
     
@@ -50,12 +51,13 @@ export class Cell extends Component {
                 content = "M";
             }
         } else {
-            content = "B";
-            if (isOpened) {
-                content = "*";
-            }    
+            content = "*";
+            console.log("Boom!!");
         }
+        
         this.setState({content: content});    
+        console.log("Update ");
+        console.log(content);
     }
     //*************** */
     // User actions
@@ -70,21 +72,30 @@ export class Cell extends Component {
     flagCell = (e) => {
         e.preventDefault(); // Prevent open context menu
         this.setState({isFlag: true, content: "F"});
+        this.onGame();
     }
-
+    componentDidUpdate() {
+        let context = this.context;
+        if (context && context.isRestart && this.state.isOpened) {
+            this.setState({isOpened: false});
+            context.toggleRestart();
+        }
+    }
     render() {
-        let {content} = this.state;
-        
+        let {content, isOpened} = this.state;
+        if (!isOpened) content="";
         return (
-            <div 
-            className="cell" 
-            style={{backgroundColor: "#9A8598"}} 
-            onClick={this.openCell}
-            onContextMenu={this.flagCell}>
-                <span>{content}</span>
-            </div>
+                
+                <div 
+                className="cell" 
+                style={{backgroundColor: "#9A8598"}} 
+                onClick={this.openCell}
+                onContextMenu={this.flagCell}>
+                    <span>{content}</span>
+                </div>
         )
     }
 }
+Cell.contextType = AppContext;
 
 export default Cell

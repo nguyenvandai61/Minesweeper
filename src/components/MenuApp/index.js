@@ -5,10 +5,11 @@ import Timer from '../Timer'
 
 export class MenuApp extends Component {
     render() {
+        let {restart} = this.props;
         return (
             <div>
                 <BombCounter/>
-                <RestartButton/>
+                <RestartButton onClick={restart}/>
                 <Timer/>
             </div>
         )
