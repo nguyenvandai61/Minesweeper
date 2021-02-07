@@ -76,10 +76,14 @@ export class Cell extends Component {
         this.setState({isFlag: true, content: "F"});
         this.onGame();
     }
-    componentWillUpdate(pre) {
+    componentWillUpdate(nextProps) {
         let context = this.context;
+        if (nextProps !== this.props) {
+            let {nBomb, isBomb} = nextProps;
+            this.setState({nBomb: nBomb, isBomb: isBomb})
+        }
         if (context && context.isRestart && this.state.isOpened) {
-            this.setState({isOpened: false, ...pre});
+            this.setState({isOpened: false});
         }
     }
     render() {
