@@ -5,5 +5,5 @@
 }
 
 .board .cell {
-
+    border: 3px rgb(51, 60, 85) solid;
 }

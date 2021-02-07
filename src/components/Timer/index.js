@@ -4,7 +4,7 @@ export class Timer extends Component {
     render() {
         return (
             <div>
-                <button>0:32</button>
+                <button>1:30</button>
             </div>
         )
     }

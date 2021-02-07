@@ -1,0 +1,6 @@
+.menu-app {
+    font-family: 'Orbitron', sans-serif;
+    display: grid;
+    background-color: rgb(190, 185, 185);
+    grid-template-columns: repeat(3, auto);
+}

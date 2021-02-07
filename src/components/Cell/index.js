@@ -51,7 +51,7 @@ export class Cell extends Component {
             }
         } else {
             content = "*";
-            console.log("Boom!!");
+            alert("Boom! Gameover!");
         }
         
         this.setState({content: content});    
@@ -64,36 +64,41 @@ export class Cell extends Component {
     openCell = () => {
         if (this.state.isOpened) return;
         console.log("Open cell");
-        if (this.context.isRestart) {
-            // this.context.toggleRestart();
-        }
         this.setState({isOpened: true});
         this.onOpenHandler();
     }
-
+    toggleFlag = () => {
+        this.setState({isFlag: !this.state.isFlag});        
+    }
     flagCell = (e) => {
         e.preventDefault(); // Prevent open context menu
-        this.setState({isFlag: true, content: "F"});
+        console.log("Flag");
+        this.toggleFlag();
         this.onGame();
     }
     componentWillUpdate(nextProps) {
         let context = this.context;
+        if (this.state.isFlag) {
+            this.setState({isFlag: false});
+        }
+
         if (nextProps !== this.props) {
             let {nBomb, isBomb} = nextProps;
             this.setState({nBomb: nBomb, isBomb: isBomb})
         }
         if (context && context.isRestart && this.state.isOpened) {
-            this.setState({isOpened: false});
+            console.log("Restart");
+                this.setState({isOpened: false, });
         }
     }
     render() {
-        let {content, isOpened} = this.state;
-        if (!isOpened) content="";
+        let {content, isOpened, isFlag} = this.state;
+        if (!isOpened) {
+            content=isFlag?"F":"";
+        }
         return (
-                
                 <div 
-                className="cell" 
-                style={{backgroundColor: "#9A8598"}} 
+                className="cell"  
                 onClick={this.openCell}
                 onContextMenu={this.flagCell}>
                     <span>{content}</span>

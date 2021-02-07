@@ -23,7 +23,7 @@ class App extends Component {
     this.state = {
       isRestart: false,
       theme: themes.light,
-      level: Levels.SUPEREASY
+      level: Levels.MEDIUM
     }
   }
 
