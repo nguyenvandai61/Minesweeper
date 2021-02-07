@@ -7,7 +7,7 @@ import ThemedButton from "./components/Theme/ThemedButton";
 import Menu from './components/Menu';
 import MenuApp from './components/MenuApp'
 import Board from './components/Board'
-import { AppContext } from './AppContext';
+import { AppContext, Levels } from './AppContext';
 
 function Toolbar(props) {
   return (
@@ -22,13 +22,15 @@ class App extends Component {
     super(props);
     this.state = {
       isRestart: false,
-      theme: themes.light
+      theme: themes.light,
+      level: Levels.SUPEREASY
     }
   }
 
   toggleRestart = () => {
+    console.log("ttoggle restart")
     let isRestart = this.state.isRestart;
-    this.setState({isRestart: !isRestart});
+    this.setState({ isRestart: !isRestart });
   }
 
   toggleTheme = () => {
@@ -39,21 +41,31 @@ class App extends Component {
     }))
   }
 
+  selectLevel = (value) => {
+    // Value : Levels.MEDIUM ..
+    this.setState({isRestart: true,level: Levels[value]});
+  }
+
   render() {
-    let { isRestart } = this.state;
+    let { isRestart, level } = this.state;
     return (
-      <div className="App">
-        <ThemeContext.Provider value={this.state.theme}>
-          <Toolbar changeTheme={this.toggleTheme} />
-        </ThemeContext.Provider>
-        <Menu />
-        <MenuApp restart={this.toggleRestart}/>
-        <div>
-          <AppContext.Provider value={{isRestart: isRestart, toggleRestart: this.toggleRestart}}>
+      <AppContext.Provider 
+      value={{ 
+        isRestart: isRestart,
+        level: level,
+        toggleRestart: this.toggleRestart, 
+        }}>
+        <div className="App">
+          <ThemeContext.Provider value={this.state.theme}>
+            <Toolbar changeTheme={this.toggleTheme} />
+          </ThemeContext.Provider>
+          <Menu selectLevel={this.selectLevel}/>
+          <MenuApp />
+          <div>
             <Board/>
-          </AppContext.Provider>
+          </div>
         </div>
-      </div>
+      </AppContext.Provider>
     );
   }
 }

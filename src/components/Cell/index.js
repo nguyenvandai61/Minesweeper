@@ -15,7 +15,6 @@ export class Cell extends Component {
         }
     }
     
-
     onGame = () => {
         let {isOpened} = this.state;
         
@@ -65,6 +64,9 @@ export class Cell extends Component {
     openCell = () => {
         if (this.state.isOpened) return;
         console.log("Open cell");
+        if (this.context.isRestart) {
+            // this.context.toggleRestart();
+        }
         this.setState({isOpened: true});
         this.onOpenHandler();
     }
@@ -74,11 +76,10 @@ export class Cell extends Component {
         this.setState({isFlag: true, content: "F"});
         this.onGame();
     }
-    componentDidUpdate() {
+    componentWillUpdate(pre) {
         let context = this.context;
         if (context && context.isRestart && this.state.isOpened) {
-            this.setState({isOpened: false});
-            context.toggleRestart();
+            this.setState({isOpened: false, ...pre});
         }
     }
     render() {

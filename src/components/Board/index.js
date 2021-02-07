@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { AppContext } from '../../AppContext';
 import Cell from "../Cell";
 import "./style.css";
 
@@ -6,9 +7,6 @@ export default class Board extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            nBomb: 0,
-            width: 0,
-            height: 0,
             bombBoard: [],
             board: []
         }
@@ -24,6 +22,7 @@ export default class Board extends Component {
     }
 
     initBombBoard = (nBomb, width, height) => {
+        console.log("Tao bang: "+width);
         let bombPosArray = this.randomBomb(nBomb, width * height);
         let bombBoard = Array(height).fill().map(() => Array(width).fill(0));
 
@@ -87,12 +86,13 @@ export default class Board extends Component {
     renderBoard = () => {
         let {board, bombBoard} = this.state;
         console.log(board);
+        let r = board.length;
 
         console.log("render board");
         return (
             board.map((row, i) => {
                 return row.map((cell, j) => 
-                <Cell key={j} className="cell" nBomb={cell} isBomb={bombBoard[i][j]}/>)
+                <Cell key={j+i*r} className="cell" nBomb={cell} isBomb={bombBoard[i][j]}/>)
             })
         )
     }
@@ -102,7 +102,11 @@ export default class Board extends Component {
     restartGame = () => {
         console.log("restart game");
         this.clearBoard();
-        let bombBoard = this.initBombBoard(3, 4, 4);
+
+        let context = this.context;
+        let level = context.level;
+        console.log(context.level);
+        let bombBoard = this.initBombBoard(level.nBomb, level.width, level.height);
         let board = this.findBoard(bombBoard);
         this.setState({
             bombBoard: bombBoard,
@@ -110,27 +114,25 @@ export default class Board extends Component {
         })
         
     }
-
-
+    componentDidUpdate() {
+    }
     componentDidMount() {
         this.restartGame();
     }
 
     componentWillUpdate(nextProps) {
-        console.log(nextProps);
-        if (nextProps.isRestart) {
+        console.log("Update" + this.context.isRestart)
+        if (this.context.isRestart) {
             this.restartGame();
-            this.props.setIsRestart(false);
+            this.context.toggleRestart();
         }
         else {
             return;
         }
     }
-
+  
     render() {
         let { board, bombBoard } = this.state;
-        let {isRestart} = this.props || true;
-        
         let h = board.length;
         let w = (h > 0) ? board[0].length : 0;
         let boardStyle = {
@@ -145,3 +147,5 @@ export default class Board extends Component {
         )
     }
 }
+
+Board.contextType = AppContext;
