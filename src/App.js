@@ -22,8 +22,10 @@ class App extends Component {
     super(props);
     this.state = {
       isRestart: false,
+      isGameover: false,
+      selectedCell: -1,
       theme: themes.light,
-      level: Levels.MEDIUM
+      level: Levels.SUPEREASY
     }
   }
 
@@ -31,6 +33,10 @@ class App extends Component {
     console.log("ttoggle restart")
     let isRestart = this.state.isRestart;
     this.setState({ isRestart: !isRestart });
+  }
+  toggleGameover = () => {
+    console.log("ttoggle gameover")
+    this.setState({ isGameover: !this.state.isGameover});
   }
 
   toggleTheme = () => {
@@ -41,20 +47,22 @@ class App extends Component {
     }))
   }
 
+
   selectLevel = (value) => {
     // Value : Levels.MEDIUM ..
     this.setState({isRestart: true,level: Levels[value]});
   }
 
   render() {
-    let { isRestart, level } = this.state;
+    let { isRestart, isGameover, level, selectedCell } = this.state;
     return (
       <AppContext.Provider 
       value={{ 
-        isRestart: isRestart,
-        level: level,
-        toggleRestart: this.toggleRestart, 
-        }}>
+        isRestart, isGameover, level, 
+      selectedCell,
+      toggleGameover: this.toggleGameover,
+      toggleRestart: this.toggleRestart,
+       }}>
         <div className="App">
           <ThemeContext.Provider value={this.state.theme}>
             <Toolbar changeTheme={this.toggleTheme} />

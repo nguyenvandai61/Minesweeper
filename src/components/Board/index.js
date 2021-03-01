@@ -86,47 +86,49 @@ export default class Board extends Component {
     renderBoard = () => {
         let {board, bombBoard} = this.state;
         console.log(board);
-        let r = board.length;
+        const r = board.length;
 
         console.log("render board");
         return (
             board.map((row, i) => {
                 return row.map((cell, j) => 
-                <Cell key={j+i*r} className="cell" nBomb={cell} isBomb={bombBoard[i][j]}/>)
+                <Cell i={i} j={j} className="cell" nBomb={cell} isBomb={bombBoard[i][j]}/>)
             })
         )
     }
+    getEmptyBoard = () => {
+        return {bombBoard: [], board: []}
+    }
     clearBoard = () => {
-        this.setState({bombBoard: [], board: []})
+        this.setState({bombBoard: [], board: []});
     }
     restartGame = () => {
         console.log("restart game");
         this.clearBoard();
-
+        // Set context
         let context = this.context;
         let level = context.level;
-        console.log(context.level);
+        
         let bombBoard = this.initBombBoard(level.nBomb, level.width, level.height);
         let board = this.findBoard(bombBoard);
+        
         this.setState({
             bombBoard: bombBoard,
             board: board
         })
-        
-    }
-    componentDidUpdate() {
     }
     componentDidMount() {
         this.restartGame();
     }
 
-    componentWillUpdate(nextProps) {
-        console.log("Update" + this.context.isRestart)
+    componentWillUpdate(nextProps, abc) {
+        console.log("Board update!");
         if (this.context.isRestart) {
+            console.log("ready restart game")
             this.restartGame();
             this.context.toggleRestart();
         }
-        else {
+        else {    
             return;
         }
     }

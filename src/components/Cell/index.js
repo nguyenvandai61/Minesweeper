@@ -32,10 +32,17 @@ export class Cell extends Component {
 
     onOpenHandler = () => {
         let {isBomb, nBomb} = this.state;
+        
+        console.log(this.context);
+        let {i, j} = this.props;
+        this.context.selectedCell = i+j*this.context.level.width;
+        console.log(this.context);
+            
         if (isBomb) {
             this.onFinishHandler();
         }
         else {
+            console.log(i);
             this.setState({content: nBomb});
         }
     }
@@ -50,7 +57,9 @@ export class Cell extends Component {
                 content = "M";
             }
         } else {
+            // Click boom
             content = "*";
+            this.context.toggleGameover();
             alert("Boom! Gameover!");
         }
         
@@ -63,6 +72,7 @@ export class Cell extends Component {
     //************** */
     openCell = () => {
         if (this.state.isOpened) return;
+        if (this.context.isGameover) return;
         console.log("Open cell");
         this.setState({isOpened: true});
         this.onOpenHandler();
@@ -72,27 +82,38 @@ export class Cell extends Component {
     }
     flagCell = (e) => {
         e.preventDefault(); // Prevent open context menu
-        console.log("Flag");
+        if (this.state.isOpened) return;
         this.toggleFlag();
         this.onGame();
     }
-    componentWillUpdate(nextProps) {
+    componentWillUpdate(nextProps,abc, a1, b1) {
         let context = this.context;
         if (this.state.isFlag) {
             this.setState({isFlag: false});
         }
-
+        
         if (nextProps !== this.props) {
-            let {nBomb, isBomb} = nextProps;
-            this.setState({nBomb: nBomb, isBomb: isBomb})
+            this.setState({...nextProps})
+        }
+        let {i, j} = this.props;
+        let idx = i+j*this.context.level.width;
+        // TODO: Loop update twice
+        console.log(idx);
+        if (context.isGameover && context.selectedCell == idx) {
+            console.log("game over");
+            this.setState({isOpened: true});
+            context.toggleGameover();
         }
         if (context && context.isRestart && this.state.isOpened) {
             console.log("Restart");
-                this.setState({isOpened: false, });
+            this.setState({isOpened: false, });
         }
     }
     render() {
         let {content, isOpened, isFlag} = this.state;
+        if (this.context.isGameover) {
+            isOpened = true;
+        }
         if (!isOpened) {
             content=isFlag?"F":"";
         }
