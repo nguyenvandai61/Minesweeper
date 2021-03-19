@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { AppContext } from '../../../AppContext';
 
 export class RestartButton  extends Component {
     render() {
@@ -12,7 +11,5 @@ export class RestartButton  extends Component {
         )
     }
 }
-
-RestartButton.contextType = AppContext;
 
 export default RestartButton

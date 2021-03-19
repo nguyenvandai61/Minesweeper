@@ -1,4 +1,3 @@
-import React from "react"
 export const Levels = {
     "SUPEREASY": {
         nBomb: 1,
@@ -22,5 +21,3 @@ export const Levels = {
         width: 10
     },
 }
-  
-export const AppContext = React.createContext();
