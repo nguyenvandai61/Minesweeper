@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import RestedFlagActions from '../../actions/rested_flag';
 import stateActions from '../../actions/state';
+import nRestedFlagStore from '../../stores/flag';
 import stateGameoverStore from "../../stores/stateGameover";
 import stateRestartStore from '../../stores/stateRestart';
 import './style.css';
@@ -41,9 +43,12 @@ export class Cell extends Component {
     }
 
     onOpenHandler = () => {
-        let { isBomb, nBomb } = this.state;
-
-        if (isBomb) {
+        let { isFlag, isBomb, nBomb } = this.state;
+        if (isFlag) {
+            RestedFlagActions.increment();
+            this.setState({ content: nBomb });
+        } 
+        else if (isBomb) {
             stateActions.setGameOverState(true);
             this.onFinishHandler();
         }
@@ -79,7 +84,14 @@ export class Cell extends Component {
         this.onOpenHandler();
     }
     toggleFlag = () => {
+        if (this.state.isFlag) 
+            RestedFlagActions.increment();
+        else {
+            if (nRestedFlagStore.getState() === 0) return;
+            RestedFlagActions.decrement();
+        }
         this.setState({ isFlag: !this.state.isFlag });
+        
     }
     flagCell = (e) => {
         e.preventDefault(); // Prevent open context menu
