@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
-import { AppContext } from '../../AppContext';
 import Cell from "../Cell";
+import store from "../../stores/levels"
 import "./style.css";
+import { Levels } from '../../constants';
 
 export default class Board extends Component {
     constructor(props) {
         super(props);
         this.state = {
             bombBoard: [],
-            board: []
+            board: [],
+            level: Levels.SUPEREASY
         }
     }
 
@@ -102,38 +104,35 @@ export default class Board extends Component {
     clearBoard = () => {
         this.setState({bombBoard: [], board: []});
     }
-    restartGame = () => {
+    restartGame = (level) => {
         console.log("restart game");
         this.clearBoard();
-        // Set context
-        let context = this.context;
-        let level = context.level;
+        // Get level from store
+        
         
         let bombBoard = this.initBombBoard(level.nBomb, level.width, level.height);
         let board = this.findBoard(bombBoard);
         
         this.setState({
+            level: level,
             bombBoard: bombBoard,
             board: board
         })
     }
     componentDidMount() {
-        this.restartGame();
+        store.subscribe(() => {
+            console.log("store level changed");
+            let level = store.getState()
+            this.restartGame(level);
+        })
     }
 
-    componentWillUpdate(nextProps, abc) {
-        console.log("Board update!");
-        if (this.context.isRestart) {
-            console.log("ready restart game")
-            this.restartGame();
-            this.context.toggleRestart();
-        }
-        else {    
-            return;
-        }
+    componentDidUpdate() {
     }
   
     render() {
+        console.log(this.state.level);
+        console.log(this.state.board);
         let { board, bombBoard } = this.state;
         let h = board.length;
         let w = (h > 0) ? board[0].length : 0;
@@ -149,5 +148,3 @@ export default class Board extends Component {
         )
     }
 }
-
-Board.contextType = AppContext;

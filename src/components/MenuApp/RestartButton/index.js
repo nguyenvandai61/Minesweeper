@@ -6,7 +6,7 @@ export class RestartButton  extends Component {
         let context = this.context;
         return (
             <div>
-                <button {...props} onClick={context.toggleRestart}><i class="fa fa-smile-o" aria-hidden="true"></i></button>
+                <button {...props} onClick={context.toggleRestart}><i className="fa fa-smile-o" aria-hidden="true"></i></button>
             </div>
         )
     }

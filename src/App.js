@@ -1,21 +1,11 @@
 import React, { Component } from 'react'
-import logo from './logo.svg';
-
 import './App.css';
-import { ThemeContext, themes } from "./components/Theme/ThemeContext";
 import ThemedButton from "./components/Theme/ThemedButton";
 import Menu from './components/Menu';
 import MenuApp from './components/MenuApp'
 import Board from './components/Board'
-import { AppContext, Levels } from './AppContext';
-
-function Toolbar(props) {
-  return (
-    <ThemedButton onClick={props.changeTheme}>
-      Change Theme
-    </ThemedButton>
-  );
-}
+import {Levels} from './constants'
+import store from './stores/levels'
 
 class App extends Component {
   constructor(props) {
@@ -24,8 +14,6 @@ class App extends Component {
       isRestart: false,
       isGameover: false,
       selectedCell: -1,
-      theme: themes.light,
-      level: Levels.SUPEREASY
     }
   }
 
@@ -36,44 +24,26 @@ class App extends Component {
   }
   toggleGameover = () => {
     console.log("ttoggle gameover")
-    this.setState({ isGameover: !this.state.isGameover});
-  }
-
-  toggleTheme = () => {
-    this.setState(state => ({
-      theme: state.theme === themes.dark
-        ? themes.light
-        : themes.dark
-    }))
+    this.setState({ isGameover: !this.state.isGameover });
   }
 
 
-  selectLevel = (value) => {
-    // Value : Levels.MEDIUM ..
-    this.setState({isRestart: true,level: Levels[value]});
+  selectLevel = (value) => { 
+    store.dispatch({
+        type: 'SET_LEVEL',
+        levels: Levels[value]
+    })
   }
 
   render() {
-    let { isRestart, isGameover, level, selectedCell } = this.state;
     return (
-      <AppContext.Provider 
-      value={{ 
-        isRestart, isGameover, level, 
-      selectedCell,
-      toggleGameover: this.toggleGameover,
-      toggleRestart: this.toggleRestart,
-       }}>
         <div className="App">
-          <ThemeContext.Provider value={this.state.theme}>
-            <Toolbar changeTheme={this.toggleTheme} />
-          </ThemeContext.Provider>
-          <Menu selectLevel={this.selectLevel}/>
+          <Menu selectLevel={this.selectLevel} />
           <MenuApp />
           <div>
-            <Board/>
+            <Board />
           </div>
         </div>
-      </AppContext.Provider>
     );
   }
 }
