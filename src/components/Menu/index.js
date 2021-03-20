@@ -1,6 +1,5 @@
 import { Button, ButtonGroup } from '@material-ui/core';
 import React, { Component } from 'react'
-import { Bomb } from '@material-ui/icons';
 
 export class Menu extends Component {
     handleClick = (e) => {
