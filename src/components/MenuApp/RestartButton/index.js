@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import stateActions from '../../../actions/state';
+import {Button} from '@material-ui/core'
+import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 
 export class RestartButton extends Component {
     restartGame = () => {
@@ -9,7 +11,9 @@ export class RestartButton extends Component {
     render() {
         return (
             <div>
-                <button onClick={this.restartGame}><i className="fa fa-smile-o" aria-hidden="true"></i></button>
+                <Button color="primary" variant="contained" onClick={this.restartGame}>
+                    <InsertEmoticonIcon></InsertEmoticonIcon>
+                </Button>
             </div>
         )
     }

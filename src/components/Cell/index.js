@@ -15,7 +15,16 @@ export class Cell extends Component {
             content: "_",
         }
     }
-
+    getColor = (content) =>  {
+        switch(content) {
+            case 1: return "blue";
+            case 2: return "green";
+            case 3: return "red";
+            default:
+                return "black";
+        }
+    }
+    
     onGame = () => {
         let { isOpened } = this.state;
 
@@ -54,7 +63,7 @@ export class Cell extends Component {
             }
         } else {
             // Click boom
-            content = "*";
+            content = "💣";
         }
         console.log(content);
         this.setState({ content: content });
@@ -94,25 +103,23 @@ export class Cell extends Component {
             this.setState({ isOpened: stateGameoverStore.getState() });
         })
         stateRestartStore.subscribe(() => {
-            console.log("sss")
             this.setState({isOpened: false, content: "_"});
         })
-    }
-    contentHandler() {
-
     }
     render() {
         let { content, isOpened, isFlag } = this.state;
         if (!isOpened) {
-            content = isFlag? "F": "_";
+            content = isFlag? "🚩": "_";
         }
+        let color = this.getColor(content);
+        console.log(color);
         return (
             <div>
                 <div
-                    className="cell"
+                    className={`cell ${isOpened? "": "close"}`}
                     onClick={this.openCell}
                     onContextMenu={this.flagCell}>
-                    <span>{content}</span>
+                    <span style={{color: color}}>{content}</span>
                 </div>
             </div>
         )

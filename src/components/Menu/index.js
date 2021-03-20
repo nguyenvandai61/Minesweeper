@@ -1,4 +1,6 @@
+import { Button, ButtonGroup } from '@material-ui/core';
 import React, { Component } from 'react'
+import { Bomb } from '@material-ui/icons';
 
 export class Menu extends Component {
     handleClick = (e) => {
@@ -6,11 +8,18 @@ export class Menu extends Component {
     }
     render() {
         let levelTxts = ["SuperEasy", "Easy", "Medium", "Hard"];
-        let dom = levelTxts.map((lv,idx) => (<button onClick={this.handleClick} key={idx}> {lv} </button>))
+        let dom = levelTxts.map((lv,idx) => 
+            (
+                <Button
+                onClick={this.handleClick} key={idx}> {lv} </Button>
+                ))
         return (
-            <div className = "menu">
+            <ButtonGroup 
+            color="primary"
+            variant="contained"
+            className = "menu">
                 {dom}
-            </div>
+            </ButtonGroup>
         )
     }
 }
