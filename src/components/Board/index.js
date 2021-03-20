@@ -24,7 +24,6 @@ export default class Board extends Component {
     }
 
     initBombBoard = (nBomb, width, height) => {
-        console.log("Tao bang: "+width);
         let bombPosArray = this.randomBomb(nBomb, width * height);
         let bombBoard = Array(height).fill().map(() => Array(width).fill(0));
 
@@ -87,8 +86,6 @@ export default class Board extends Component {
 
     renderBoard = () => {
         let {board, bombBoard} = this.state;
-        console.log(board);
-        console.log("render board");
         return (
             board.map((row, i) => {
                 return row.map((cell, j) => 
@@ -100,7 +97,6 @@ export default class Board extends Component {
         return {bombBoard: [], board: []}
     }
     restartGame = (level) => {
-        console.log("restart game");
         if (!level) level = this.state.level;
         // Get level from store
         
@@ -116,12 +112,10 @@ export default class Board extends Component {
     }
     componentDidMount() {
         store.subscribe(() => {
-            console.log("store level changed");
             let level = store.getState()
             this.restartGame(level);
         })
         stateRestartStore.subscribe(() => {
-            console.log("store restart changed");
             if (stateRestartStore.getState())
                 this.restartGame();
         })

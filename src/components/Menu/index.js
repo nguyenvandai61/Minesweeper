@@ -6,7 +6,7 @@ export class Menu extends Component {
     }
     render() {
         let levelTxts = ["SuperEasy", "Easy", "Medium", "Hard"];
-        let dom = levelTxts.map(lv => (<button onClick={this.handleClick}> {lv} </button>))
+        let dom = levelTxts.map((lv,idx) => (<button onClick={this.handleClick} key={idx}> {lv} </button>))
         return (
             <div className = "menu">
                 {dom}

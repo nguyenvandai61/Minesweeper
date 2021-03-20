@@ -4,7 +4,6 @@ import Menu from './components/Menu';
 import MenuApp from './components/MenuApp'
 import Board from './components/Board'
 import {Levels} from './constants'
-import store from './stores/levels'
 import stateRestartStore from './stores/stateRestart';
 import stateGameoverStore from './stores/stateGameover';
 import stateActions from './actions/state';
@@ -25,16 +24,13 @@ class App extends Component {
   selectLevel = (level) => { 
     stateActions.setGameOverState(false);
     stateActions.setRestartState(true);
-    console.log(level)
     levelActions.setLevel(Levels[level]);
   }
   subscribeStateGame() {
     stateGameoverStore.subscribe(() => {
-      console.log("state Gameover store changed");
       this.setState({isGameover: stateGameoverStore.getState()})
     })
     stateRestartStore.subscribe(() => {
-      console.log("state Restart store changed");
       this.setState({isRestart: stateRestartStore.getState()})
     })
   }
