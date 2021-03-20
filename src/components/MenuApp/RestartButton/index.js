@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
+import stateActions from '../../../actions/state';
 
-export class RestartButton  extends Component {
+export class RestartButton extends Component {
+    restartGame = () => {
+        stateActions.setGameOverState(false);
+        stateActions.setRestartState(true);
+    }
     render() {
-        let props = this.props;
-        let context = this.context;
         return (
             <div>
-                <button {...props} onClick={context.toggleRestart}><i className="fa fa-smile-o" aria-hidden="true"></i></button>
+                <button onClick={this.restartGame}><i className="fa fa-smile-o" aria-hidden="true"></i></button>
             </div>
         )
     }

@@ -3,7 +3,7 @@ import Cell from "../Cell";
 import store from "../../stores/levels"
 import "./style.css";
 import { Levels } from '../../constants';
-
+import stateRestartStore from '../../stores/stateRestart';
 export default class Board extends Component {
     constructor(props) {
         super(props);
@@ -88,31 +88,26 @@ export default class Board extends Component {
     renderBoard = () => {
         let {board, bombBoard} = this.state;
         console.log(board);
-        const r = board.length;
-
         console.log("render board");
         return (
             board.map((row, i) => {
                 return row.map((cell, j) => 
-                <Cell i={i} j={j} className="cell" nBomb={cell} isBomb={bombBoard[i][j]}/>)
+                <Cell i={i} j={j} key={i+'_'+j} className="cell" nBomb={cell} isBomb={bombBoard[i][j]}/>)
             })
         )
     }
     getEmptyBoard = () => {
         return {bombBoard: [], board: []}
     }
-    clearBoard = () => {
-        this.setState({bombBoard: [], board: []});
-    }
     restartGame = (level) => {
         console.log("restart game");
-        this.clearBoard();
+        if (!level) level = this.state.level;
         // Get level from store
         
         
         let bombBoard = this.initBombBoard(level.nBomb, level.width, level.height);
         let board = this.findBoard(bombBoard);
-        
+        console.log("**", bombBoard)
         this.setState({
             level: level,
             bombBoard: bombBoard,
@@ -125,14 +120,16 @@ export default class Board extends Component {
             let level = store.getState()
             this.restartGame(level);
         })
+        stateRestartStore.subscribe(() => {
+            console.log("store restart changed");
+            if (stateRestartStore.getState())
+                this.restartGame();
+        })
+        this.restartGame(this.state.level);
     }
 
-    componentDidUpdate() {
-    }
-  
+
     render() {
-        console.log(this.state.level);
-        console.log(this.state.board);
         let { board, bombBoard } = this.state;
         let h = board.length;
         let w = (h > 0) ? board[0].length : 0;
@@ -142,8 +139,10 @@ export default class Board extends Component {
         }
 
         return (
-            <div className="board" style={boardStyle}>
-                {this.renderBoard()}
+            <div>
+                <div className="board" style={boardStyle}>
+                    {this.renderBoard()}
+                </div>
             </div>
         )
     }

@@ -4,7 +4,7 @@ import {Levels} from '../constants';
 function levels(state = {}, action) {
     switch (action.type) {
         case 'SET_LEVEL':
-            state = action.levels;
+            state = action.level;
             return state;
         default:
             return state;
@@ -12,12 +12,5 @@ function levels(state = {}, action) {
 }
 
 const store = createStore(levels, Levels.SUPEREASY);
-
-// store.dispatch({
-//     type: 'SET_LEVEL',
-//     levels: Levels.HARD
-// })
-
-console.log(store.getState());
 
 export default store;

@@ -4,7 +4,7 @@ export class BombCounter extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            nBomb: 0
+            nBomb: 1
         }
 
     } 
