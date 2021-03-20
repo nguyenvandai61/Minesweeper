@@ -19,6 +19,13 @@ class index extends Component {
             this.setState({isRunning: false, ticks: 0})
             clearInterval(this.state.clockInterval);
             this.startClock();
+        });
+        stateGameoverStore.subscribe(() => {
+            this.setState({isRunning: false})
+            if (stateGameoverStore.getState()) {
+                console.log("clear")
+                clearInterval(this.state.clockInterval);
+            }
         })
     }
     formatTime = () => {
