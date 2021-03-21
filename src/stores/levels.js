@@ -11,6 +11,6 @@ function levels(state = {}, action) {
     }
 }
 
-const store = createStore(levels, Levels.SUPEREASY);
+const store = createStore(levels, Levels.HARD);
 
 export default store;

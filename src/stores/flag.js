@@ -1,6 +1,4 @@
 import { createStore } from 'redux'
-import {Levels} from '../constants';
-
 function levels(state = {}, action) {
     switch (action.type) {
         case 'SET_NUM_RESTED_FLAG':

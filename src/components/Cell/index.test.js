@@ -8,7 +8,6 @@ describe("Test open zero", () => {
     const {tests, results} = DataTest;
     const wrapper = shallow(<Cell />);
     tests.forEach((test, idx) => {
-        console.log(idx)
         let {i, j, board} = test;
         let height = board.length, width = board[0].length;
         let res = Array(height).fill().map(() => Array(width).fill(0));

@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import BoardActions from '../../actions/board';
 import RestedFlagActions from '../../actions/rested_flag';
 import stateActions from '../../actions/state';
 import { SymbolConstants } from '../../constants';
+import BoardStore from '../../stores/board';
+import BoardOpenZeroStore from '../../stores/boardOpenZero';
 import nRestedFlagStore from '../../stores/flag';
 import store from '../../stores/levels';
 import stateGameoverStore from "../../stores/stateGameover";
@@ -15,12 +18,13 @@ export class Cell extends Component {
             isBomb: this.props.isBomb,
             isFlag: false,
             isOpened: this.props.isOpened || false,
-
+            i: this.props.i,
+            j: this.props.j,
             content: " ",
         }
     }
-    getColor = (content) =>  {
-        switch(content) {
+    getColor = (content) => {
+        switch (content) {
             case 1: return "blue";
             case 2: return "green";
             case 3: return "red";
@@ -29,7 +33,7 @@ export class Cell extends Component {
                 return "black";
         }
     }
-    
+
     onGame = () => {
         let { isOpened } = this.state;
 
@@ -50,24 +54,52 @@ export class Cell extends Component {
         if (isFlag) {
             RestedFlagActions.increment();
             this.setState({ content: nBomb });
-        } 
+        }
         else if (isBomb) {
             stateActions.setGameOverState(true);
             this.onFinishHandler();
         }
         else {
-            let content = nBomb === 0? 
-                SymbolConstants.NO_BOMB:
+            let content = nBomb === 0 ?
+                SymbolConstants.NO_BOMB :
                 nBomb;
-            let {i, j} = this.state;            
+            let { i, j } = this.state;
+            let { isReady, iClick, jClick } = BoardOpenZeroStore.getState();
             if (nBomb === 0) {
-                // let {height, width}= store.getState();
-                // let res = Array(height).fill().map(() => Array(width).fill(0));
-                // let matrixFill = this.openZero(i, j, board, res);
+                let { height, width } = store.getState();
+                let board = BoardStore.getState();
+                let res = Array(height).fill().map(() => Array(width).fill(0));
+                let matrixFill = this.openZero(i, j, board, res);
+                BoardActions.setBoardOpenZero(matrixFill);
             }
             this.setState({ content });
         }
     }
+    openNoClick() {
+        let { nBomb } = this.state;
+        let content = nBomb === 0 ?
+            SymbolConstants.NO_BOMB :
+            nBomb;
+        this.setState({ content, isOpened: true });
+    }
+
+    openZero = (i, j, board, res) => {
+        if (!board && !res) return;
+        if (i < 0 || i >= board.length
+            || j < 0 || j >= board[0].length) return;
+        if (res[i][j] !== 0) return;
+        if (board[i][j] !== 0) {
+            res[i][j] = 1;
+            return;
+        }
+        res[i][j] = 1;
+        this.openZero(i - 1, j, board, res);
+        this.openZero(i, j - 1, board, res);
+        this.openZero(i, j + 1, board, res);
+        this.openZero(i + 1, j, board, res);
+        return res;
+    }
+
 
     onFinishHandler = () => {
         let { isBomb, nBomb, isOpened, isFlag } = this.state;
@@ -90,19 +122,17 @@ export class Cell extends Component {
     openCell = () => {
         if (this.state.isOpened) return;
         if (stateGameoverStore.getState()) return;
-        console.log("Open cell");
         this.setState({ isOpened: true });
         this.onOpenHandler();
     }
     toggleFlag = () => {
-        if (this.state.isFlag) 
+        if (this.state.isFlag)
             RestedFlagActions.increment();
         else {
             if (nRestedFlagStore.getState() === 0) return;
             RestedFlagActions.decrement();
         }
         this.setState({ isFlag: !this.state.isFlag });
-        
     }
     flagCell = (e) => {
         e.preventDefault(); // Prevent open context menu
@@ -114,52 +144,45 @@ export class Cell extends Component {
         if (this.state.isFlag) {
             this.setState({ isFlag: false });
         }
-
         if (nextProps !== this.props) {
             this.setState({ ...nextProps })
         }
     }
-    openZero = (i, j, board, res) => {
-        if(!board && !res)  return;
-        if (i < 0 || i >= board.length 
-            || j < 0 || j >= board[0].length) return;
-        if (res[i][j]!==0) return; 
-        if (board[i][j] !== 0) {
-            res[i][j] = 1;
-            return;
-        }
-        res[i][j] = 1;
-        this.openZero(i-1, j, board, res);
-        this.openZero(i, j-1, board, res);
-        this.openZero(i, j+1, board, res);
-        this.openZero(i+1, j, board, res);
-        return res;
-    }
+
     componentDidMount() {
         stateGameoverStore.subscribe(() => {
             this.onFinishHandler();
             this.setState({ isOpened: stateGameoverStore.getState() });
-        })
+        });
         stateRestartStore.subscribe(() => {
-            this.setState({isOpened: false, content: SymbolConstants.NO_BOMB});
+            this.setState({ isOpened: false, content: SymbolConstants.NO_BOMB });
+        });
+        let openZeroSubscriber = BoardOpenZeroStore.subscribe(() => {
+            let { i, j, isOpened } = this.state;
+            let { board, isReady } = BoardOpenZeroStore.getState();
+            if (!isOpened) {
+                if (!!board && board[i][j])
+                this.openNoClick();
+            };
         })
+
+        this.setState({ openZeroSubscriber })
     }
     render() {
         let { content, isOpened, isFlag } = this.state;
-        if (!isOpened) content = isFlag? SymbolConstants.FLAG: SymbolConstants.NO_BOMB;        
+        if (!isOpened) content = isFlag ? SymbolConstants.FLAG : SymbolConstants.NO_BOMB;
         let color = this.getColor(content);
 
         return (
             <div>
                 <div
-                    className={`cell ${isOpened? "": "close"}`}
+                    className={`cell ${isOpened ? "" : "close"}`}
                     onClick={this.openCell}
                     onContextMenu={this.flagCell}>
-                    <span style={{color: color}}>{content}</span>
+                    <span style={{ color: color }}>{content}</span>
                 </div>
             </div>
         )
     }
 }
-
 export default Cell
