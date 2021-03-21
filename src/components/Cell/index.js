@@ -3,6 +3,7 @@ import RestedFlagActions from '../../actions/rested_flag';
 import stateActions from '../../actions/state';
 import { SymbolConstants } from '../../constants';
 import nRestedFlagStore from '../../stores/flag';
+import store from '../../stores/levels';
 import stateGameoverStore from "../../stores/stateGameover";
 import stateRestartStore from '../../stores/stateRestart';
 import './style.css';
@@ -58,6 +59,12 @@ export class Cell extends Component {
             let content = nBomb === 0? 
                 SymbolConstants.NO_BOMB:
                 nBomb;
+            let {i, j} = this.state;            
+            if (nBomb === 0) {
+                // let {height, width}= store.getState();
+                // let res = Array(height).fill().map(() => Array(width).fill(0));
+                // let matrixFill = this.openZero(i, j, board, res);
+            }
             this.setState({ content });
         }
     }
@@ -75,7 +82,6 @@ export class Cell extends Component {
             // Click boom
             content = SymbolConstants.BOMB;
         }
-        console.log(content);
         this.setState({ content: content });
     }
     //*************** */
@@ -112,6 +118,22 @@ export class Cell extends Component {
         if (nextProps !== this.props) {
             this.setState({ ...nextProps })
         }
+    }
+    openZero = (i, j, board, res) => {
+        if(!board && !res)  return;
+        if (i < 0 || i >= board.length 
+            || j < 0 || j >= board[0].length) return;
+        if (res[i][j]!==0) return; 
+        if (board[i][j] !== 0) {
+            res[i][j] = 1;
+            return;
+        }
+        res[i][j] = 1;
+        this.openZero(i-1, j, board, res);
+        this.openZero(i, j-1, board, res);
+        this.openZero(i, j+1, board, res);
+        this.openZero(i+1, j, board, res);
+        return res;
     }
     componentDidMount() {
         stateGameoverStore.subscribe(() => {

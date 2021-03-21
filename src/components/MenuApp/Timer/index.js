@@ -23,7 +23,6 @@ class index extends Component {
         stateGameoverStore.subscribe(() => {
             this.setState({isRunning: false})
             if (stateGameoverStore.getState()) {
-                console.log("clear")
                 clearInterval(this.state.clockInterval);
             }
         })

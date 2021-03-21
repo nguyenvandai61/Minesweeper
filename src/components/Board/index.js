@@ -103,7 +103,6 @@ export default class Board extends Component {
         
         let bombBoard = this.initBombBoard(level.nBomb, level.width, level.height);
         let board = this.findBoard(bombBoard);
-        console.log("**", bombBoard)
         this.setState({
             level: level,
             bombBoard: bombBoard,
