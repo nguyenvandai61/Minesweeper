@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import RestedFlagActions from '../../actions/rested_flag';
 import stateActions from '../../actions/state';
+import { SymbolConstants } from '../../constants';
 import nRestedFlagStore from '../../stores/flag';
 import stateGameoverStore from "../../stores/stateGameover";
 import stateRestartStore from '../../stores/stateRestart';
@@ -14,7 +15,7 @@ export class Cell extends Component {
             isFlag: false,
             isOpened: this.props.isOpened || false,
 
-            content: "_",
+            content: " ",
         }
     }
     getColor = (content) =>  {
@@ -22,6 +23,7 @@ export class Cell extends Component {
             case 1: return "blue";
             case 2: return "green";
             case 3: return "red";
+            case 4: return "purple";
             default:
                 return "black";
         }
@@ -39,7 +41,7 @@ export class Cell extends Component {
     }
 
     onCloseHandler = () => {
-        this.setState({ content: "_" });
+        this.setState({ content: SymbolConstants.CLOSE });
     }
 
     onOpenHandler = () => {
@@ -53,22 +55,25 @@ export class Cell extends Component {
             this.onFinishHandler();
         }
         else {
-            this.setState({ content: nBomb });
+            let content = nBomb === 0? 
+                SymbolConstants.NO_BOMB:
+                nBomb;
+            this.setState({ content });
         }
     }
 
     onFinishHandler = () => {
         let { isBomb, nBomb, isOpened, isFlag } = this.state;
         // Case Lose:
-        let content = "_";
+        let content = SymbolConstants.NO_BOMB;
         if (!isBomb) {
             content = nBomb;
             if (isFlag) {
-                content = "M";
+                content = SymbolConstants.MISS_FLAG;
             }
         } else {
             // Click boom
-            content = "💣";
+            content = SymbolConstants.BOMB;
         }
         console.log(content);
         this.setState({ content: content });
@@ -110,21 +115,18 @@ export class Cell extends Component {
     }
     componentDidMount() {
         stateGameoverStore.subscribe(() => {
-            console.log(stateGameoverStore.getState())
             this.onFinishHandler();
             this.setState({ isOpened: stateGameoverStore.getState() });
         })
         stateRestartStore.subscribe(() => {
-            this.setState({isOpened: false, content: "_"});
+            this.setState({isOpened: false, content: SymbolConstants.NO_BOMB});
         })
     }
     render() {
         let { content, isOpened, isFlag } = this.state;
-        if (!isOpened) {
-            content = isFlag? "🚩": "_";
-        }
+        if (!isOpened) content = isFlag? SymbolConstants.FLAG: SymbolConstants.NO_BOMB;        
         let color = this.getColor(content);
-        console.log(color);
+
         return (
             <div>
                 <div

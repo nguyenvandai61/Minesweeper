@@ -21,3 +21,11 @@ export const Levels = {
         width: 10
     },
 }
+
+export const SymbolConstants = {
+    CLOSE: " ",
+    BOMB: "💣",
+    FLAG: "🚩",
+    MISS_FLAG: "M",
+    NO_BOMB: " ",
+}

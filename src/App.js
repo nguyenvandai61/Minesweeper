@@ -39,6 +39,11 @@ class App extends Component {
     })
   }
 
+  cancelHandler = () => {
+    stateActions.setGameOverState(false);
+    stateActions.setRestartState(true);
+  }
+
   render() {
     let { isRestart, isGameover } = this.state;
     return (
@@ -56,7 +61,7 @@ class App extends Component {
         >
           <DialogTitle id="alert-dialog-title">GAME OVER</DialogTitle>
           <DialogActions>
-            <Button variant="error" onClick={() => stateActions.setGameOverState(false)}>
+            <Button variant="error" onClick={this.cancelHandler}>
               Cancel
             </Button>
           </DialogActions>
