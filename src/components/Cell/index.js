@@ -157,7 +157,7 @@ export class Cell extends Component {
         stateRestartStore.subscribe(() => {
             this.setState({ isOpened: false, content: SymbolConstants.NO_BOMB });
         });
-        let openZeroSubscriber = BoardOpenZeroStore.subscribe(() => {
+        BoardOpenZeroStore.subscribe(() => {
             let { i, j, isOpened } = this.state;
             let { board, isReady } = BoardOpenZeroStore.getState();
             if (!isOpened) {
@@ -165,8 +165,12 @@ export class Cell extends Component {
                 this.openNoClick();
             };
         })
-
-        this.setState({ openZeroSubscriber })
+        nRestedFlagStore.subscribe(() => {
+            if (nRestedFlagStore.getState() === 0) {
+              // Check flag
+                
+            }
+        })
     }
     render() {
         let { content, isOpened, isFlag } = this.state;

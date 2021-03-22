@@ -4,8 +4,6 @@ import Menu from './components/Menu';
 import MenuApp from './components/MenuApp'
 import Board from './components/Board'
 import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Levels } from './constants'
 import stateRestartStore from './stores/stateRestart';
@@ -13,6 +11,7 @@ import stateGameoverStore from './stores/stateGameover';
 import stateActions from './actions/state';
 import levelActions from './actions/levels';
 import { Button, DialogActions } from '@material-ui/core';
+import nRestedFlagStore from './stores/flag';
 class App extends Component {
   constructor(props) {
     super(props);
