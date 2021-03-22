@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import stateGameoverStore from '../../../stores/stateGameover';
+import stateRestartStore from '../../../stores/stateRestart';
 
 class index extends Component {
     constructor(props) {
@@ -8,10 +10,22 @@ class index extends Component {
             minutes: 0,
             seconds: 0,
             ticks: 0,
+            isRunning: false,
+            clockInterval: Function,
         }
     }
     componentDidMount() {
-        this.startClock();
+        stateRestartStore.subscribe(()=> {
+            this.setState({isRunning: false, ticks: 0})
+            clearInterval(this.state.clockInterval);
+            this.startClock();
+        });
+        stateGameoverStore.subscribe(() => {
+            this.setState({isRunning: false})
+            if (stateGameoverStore.getState()) {
+                clearInterval(this.state.clockInterval);
+            }
+        })
     }
     formatTime = () => {
         let {hours, minutes, seconds} = this.state;
@@ -28,15 +42,20 @@ class index extends Component {
         this.tickClock()
     }
     tickClock = () => {
-        let hours, minutes, seconds, ticks;
-        setInterval(() => {
+        let ticks = 0;
+        let hours, minutes, seconds;
+        this.setState({isRunning: true})
+
+        var clockInterval = setInterval(() => {
             ticks = this.state.ticks + 1;
             hours = Math.floor(ticks / 3600);
             minutes = Math.floor((ticks - hours * 3600) / 60);
             seconds = ticks % 60;
+            
             this.setState({hours, minutes, seconds, ticks})
         }, 1000)
-    }
+        this.setState({clockInterval})
+    };
     render() {
         let fNum = this.formatTime();
         return (

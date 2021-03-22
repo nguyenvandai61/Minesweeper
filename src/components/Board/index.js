@@ -4,19 +4,21 @@ import store from "../../stores/levels"
 import "./style.css";
 import { Levels } from '../../constants';
 import stateRestartStore from '../../stores/stateRestart';
+import BoardActions from '../../actions/board';
+import levelActions from '../../actions/levels';
 export default class Board extends Component {
     constructor(props) {
         super(props);
         this.state = {
             bombBoard: [],
             board: [],
-            level: Levels.SUPEREASY
+            level: Levels.HARD
         }
     }
 
     randomBomb(nBomb, nCell) {
         let set = new Set();
-        while (set.size != nBomb) {
+        while (set.size !== nBomb) {
             let n = Math.floor(Math.random() * nCell);
             set.add(n);
         }
@@ -89,7 +91,9 @@ export default class Board extends Component {
         return (
             board.map((row, i) => {
                 return row.map((cell, j) => 
-                <Cell i={i} j={j} key={i+'_'+j} className="cell" nBomb={cell} isBomb={bombBoard[i][j]}/>)
+                (<div>
+                    <Cell i={i} j={j} key={i+'_'+j} className="cell" nBomb={cell} isBomb={bombBoard[i][j]}/>
+                </div>))
             })
         )
     }
@@ -103,7 +107,7 @@ export default class Board extends Component {
         
         let bombBoard = this.initBombBoard(level.nBomb, level.width, level.height);
         let board = this.findBoard(bombBoard);
-        console.log("**", bombBoard)
+        BoardActions.setBoardGame(board);
         this.setState({
             level: level,
             bombBoard: bombBoard,
@@ -111,6 +115,7 @@ export default class Board extends Component {
         })
     }
     componentDidMount() {
+        levelActions.setLevel(this.state.level);
         store.subscribe(() => {
             let level = store.getState()
             this.restartGame(level);

@@ -16,8 +16,16 @@ export const Levels = {
         width: 8
     },
     "HARD": {
-        nBomb: 9,
+        nBomb: 18,
         height: 10,
         width: 10
     },
+}
+
+export const SymbolConstants = {
+    CLOSE: " ",
+    BOMB: "💣",
+    FLAG: "🚩",
+    MISS_FLAG: "M",
+    NO_BOMB: " ",
 }
